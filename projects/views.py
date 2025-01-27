@@ -7,14 +7,40 @@ from django.urls import reverse_lazy
 from django import forms
 from .forms import ProjectForm
 from .utils import calculate_distance
-
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 # Create your views here.
 
 class ProjectViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows projects to be viewed or edited.
+    """
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+
+    @swagger_auto_schema(
+        operation_description="List all projects",
+        responses={200: ProjectSerializer(many=True)}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="Create a new project",
+        request_body=ProjectSerializer,
+        responses={201: ProjectSerializer()}
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="Retrieve a specific project by ID",
+        responses={200: ProjectSerializer()}
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 
 # Vistas basadas en clases para el CRUD
