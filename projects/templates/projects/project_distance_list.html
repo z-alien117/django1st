@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project Distance List</title>
+</head>
+<body>
+    <h1>Project Distance List</h1>
+    <ul>
+        {% for project in projects %}
+            <li>{{ project.name }} ({{ project.latitude }}, {{ project.longitude }})</li>
+        {% endfor %}
+    </ul>
+    <h2>Distances</h2>
+    <ul>
+        {% for distance in distances %}
+            <li>{{ distance.project1.name }} to {{ distance.project2.name }}: {{ distance.distance }} km</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'project_list' %}">Back to Project List</a>
+</body>
+</html>

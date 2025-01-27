@@ -6,6 +6,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from django import forms
 from .forms import ProjectForm
+from .utils import calculate_distance
 
 
 
@@ -71,3 +72,29 @@ class ProjectDeleteView(DeleteView):
     model = Project
     template_name = 'projects/project_confirm_delete.html'  # Ruta a la plantilla para confirmar eliminación
     success_url = reverse_lazy('project_list')  # Redirección al listar proyectos tras eliminar uno
+
+class ProjectDistanceListView(ListView):
+    model = Project
+    template_name = 'projects/project_distance_list.html'
+    context_object_name = 'projects'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        projects = context['projects']
+        distances = []
+
+        for i, project1 in enumerate(projects):
+            for j, project2 in enumerate(projects):
+                if i < j:
+                    distance = calculate_distance(
+                        project1.latitude, project1.longitude,
+                        project2.latitude, project2.longitude
+                    )
+                    distances.append({
+                        'project1': project1,
+                        'project2': project2,
+                        'distance': distance
+                    })
+
+        context['distances'] = distances
+        return context
