@@ -9,6 +9,7 @@ from .forms import ProjectForm
 from .utils import calculate_distance
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from django.http import HttpResponse
 
 
 # Create your views here.
@@ -124,3 +125,6 @@ class ProjectDistanceListView(ListView):
 
         context['distances'] = distances
         return context
+    
+def health_check(request):
+    return HttpResponse(status=200)
