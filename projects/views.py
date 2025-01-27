@@ -33,11 +33,39 @@ class ProjectCreateView(CreateView):
     template_name = 'projects/project_form.html'  # Ruta a la plantilla para crear un proyecto
     success_url = reverse_lazy('project_list')  # Redirección al listar proyectos tras crear uno
 
+    def form_valid(self, form):
+        serializer = ProjectSerializer(data=form.cleaned_data)
+        if not serializer.is_valid():
+            for field, errors in serializer.errors.items():
+                for error in errors:
+                    form.add_error(field, error)
+            return self.form_invalid(form)
+
+        # Asignar latitud y longitud desde el serializer
+        form.instance.latitude = serializer.validated_data.get('latitude')
+        form.instance.longitude = serializer.validated_data.get('longitude')
+
+        return super().form_valid(form)
+
 class ProjectUpdateView(UpdateView):
     model = Project
     form_class = ProjectForm  # Usar el formulario personalizado para crear un proyecto
     template_name = 'projects/project_form.html'  # Reutilizamos la plantilla para crear/editar
     success_url = reverse_lazy('project_list')  # Redirección al listar proyectos tras editar uno
+
+    def form_valid(self, form):
+        serializer = ProjectSerializer(instance=self.object, data=form.cleaned_data)
+        if not serializer.is_valid():
+            for field, errors in serializer.errors.items():
+                for error in errors:
+                    form.add_error(field, error)
+            return self.form_invalid(form)
+
+        # Asignar latitud y longitud desde el serializer
+        form.instance.latitude = serializer.validated_data.get('latitude')
+        form.instance.longitude = serializer.validated_data.get('longitude')
+
+        return super().form_valid(form)
 
 class ProjectDeleteView(DeleteView):
     model = Project
