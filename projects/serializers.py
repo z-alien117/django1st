@@ -4,7 +4,6 @@ import googlemaps
 from django.conf import settings
 import logging
 
-# Configuración de logs (opcional)
 logger = logging.getLogger(__name__)
 
 class ProjectSerializer(serializers.ModelSerializer):
